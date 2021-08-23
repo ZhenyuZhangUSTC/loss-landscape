@@ -246,10 +246,10 @@ if __name__ == '__main__':
     # Check plotting resolution
     #--------------------------------------------------------------------------
     try:
-        args.xmin, args.xmax, args.xnum = [float(a) for a in args.x.split(':')]
+        args.xmin, args.xmax, args.xnum = [int(a) for a in args.x.split(':')]
         args.ymin, args.ymax, args.ynum = (None, None, None)
         if args.y:
-            args.ymin, args.ymax, args.ynum = [float(a) for a in args.y.split(':')]
+            args.ymin, args.ymax, args.ynum = [int(a) for a in args.y.split(':')]
             assert args.ymin and args.ymax and args.ynum, \
             'You specified some arguments for the y axis, but not all'
     except:
