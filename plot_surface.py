@@ -23,7 +23,7 @@ import plot_1D
 import model_loader
 import scheduler
 import mpi4pytorch as mpi
-
+from torch.utils.data import DataLoader
 
 
 from pruner import *
