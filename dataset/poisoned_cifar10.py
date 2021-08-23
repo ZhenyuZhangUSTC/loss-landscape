@@ -93,7 +93,7 @@ class PoisonedCIFAR10(data.Dataset):
         self.imgs = torch.tensor(np.transpose(self.imgs, (0, 3, 1, 2)))
 
     def __getitem__(self, index):
-        return self.imgs[index], self.labels[index]
+        return self.imgs[index].type(torch.FloatTensor), self.labels[index]
 
 
     # def __getitem__(self, index):
