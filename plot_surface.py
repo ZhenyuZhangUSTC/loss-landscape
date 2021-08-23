@@ -24,6 +24,15 @@ import model_loader
 import scheduler
 import mpi4pytorch as mpi
 
+
+
+from pruner import *
+from models.model_zoo import *
+from dataset.poisoned_cifar10 import PoisonedCIFAR10
+from models.resnets import resnet20s
+
+
+
 def name_surface_file(args, dir_file):
     # skip if surf_file is specified in args
     if args.surf_file:
@@ -163,7 +172,15 @@ if __name__ == '__main__':
     parser.add_argument('--threads', default=2, type=int, help='number of threads')
     parser.add_argument('--ngpu', type=int, default=1, help='number of GPUs to use for each rank, useful for data parallel evaluation')
     parser.add_argument('--batch_size', default=128, type=int, help='minibatch size')
-
+    
+    parser.add_argument("--poison_ratio", type=float, default=0.01)
+    parser.add_argument("--patch_size", type=int, default=5, help="Size of the patch")
+    parser.add_argument("--freq", dest="freq", action="store_true", help="Hidden trigger mode or normal mode?")
+    parser.add_argument("--random_loc", dest="random_loc", action="store_true", help="Is the location of the trigger randomly selected or not?")
+    parser.add_argument("--target", default=0, type=int, help="The target class")
+    parser.add_argument('--data', type=str, default='../data', help='location of the data corpus')
+    parser.add_argument('--ticket_dir', default=None, type=str)
+    
     # data parameters
     parser.add_argument('--dataset', default='cifar10', help='cifar10 | imagenet')
     parser.add_argument('--datapath', default='cifar10/data', metavar='DIR', help='path to the dataset')
@@ -241,7 +258,18 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     # Load models and extract parameters
     #--------------------------------------------------------------------------
-    net = model_loader.load(args.dataset, args.model, args.model_file)
+    
+    net = resnet20s()
+    print('loading tickets from {}'.format(args.ticket_dir))
+    ticket_checkpoint = torch.load(args.ticket_dir, map_location='cuda')
+    mask_checkpoint = extract_mask(ticket_checkpoint['state_dict'])
+    if len(mask_checkpoint):
+        prune_model_custom(net, mask_checkpoint)
+    net.load_state_dict(ticket_checkpoint['state_dict'])
+    check_sparsity(net)
+
+
+    # net = model_loader.load(args.dataset, args.model, args.model_file)
     w = net_plotter.get_weights(net) # initial parameters
     s = copy.deepcopy(net.state_dict()) # deepcopy since state_dict are references
     if args.ngpu > 1:
@@ -283,19 +311,30 @@ if __name__ == '__main__':
                                 args.data_split, args.split_idx,
                                 args.trainloader, args.testloader)
 
+
+    freq = True if args.freq else False
+    random_loc = True if args.random_loc else False
+    train_set = PoisonedCIFAR10(args.data, train=True, poison_ratio=args.poison_ratio, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
+    clean_testset = PoisonedCIFAR10(args.data, train=False, poison_ratio=0, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
+    poison_testset = PoisonedCIFAR10(args.data, train=False, poison_ratio=1.0, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
+
+    train_dl = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True)
+    clean_test_dl = DataLoader(clean_testset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+    poison_test_dl = DataLoader(poison_testset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+
     #--------------------------------------------------------------------------
     # Start the computation
     #--------------------------------------------------------------------------
-    crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
-    # crunch(surf_file, net, w, s, d, testloader, 'test_loss', 'test_acc', comm, rank, args)
+    # crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
+    crunch(surf_file, net, w, s, d, poison_test_dl, 'test_loss', 'test_acc', comm, rank, args)
 
     #--------------------------------------------------------------------------
     # Plot figures
     #--------------------------------------------------------------------------
     if args.plot and rank == 0:
         if args.y and args.proj_file:
-            plot_2D.plot_contour_trajectory(surf_file, dir_file, args.proj_file, 'train_loss', args.show)
+            plot_2D.plot_contour_trajectory(surf_file, dir_file, args.proj_file, 'test_loss', args.show)
         elif args.y:
-            plot_2D.plot_2d_contour(surf_file, 'train_loss', args.vmin, args.vmax, args.vlevel, args.show)
+            plot_2D.plot_2d_contour(surf_file, 'test_loss', args.vmin, args.vmax, args.vlevel, args.show)
         else:
             plot_1D.plot_1d_loss_err(surf_file, args.xmin, args.xmax, args.loss_max, args.log, args.show)
