@@ -180,7 +180,7 @@ if __name__ == '__main__':
     parser.add_argument("--target", default=0, type=int, help="The target class")
     parser.add_argument('--data', type=str, default='../data', help='location of the data corpus')
     parser.add_argument('--ticket_dir', default=None, type=str)
-    
+
     # data parameters
     parser.add_argument('--dataset', default='cifar10', help='cifar10 | imagenet')
     parser.add_argument('--datapath', default='cifar10/data', metavar='DIR', help='path to the dataset')
@@ -260,6 +260,7 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     
     net = resnet20s()
+    net.cuda()
     print('loading tickets from {}'.format(args.ticket_dir))
     ticket_checkpoint = torch.load(args.ticket_dir, map_location='cuda')
     mask_checkpoint = extract_mask(ticket_checkpoint['state_dict'])
