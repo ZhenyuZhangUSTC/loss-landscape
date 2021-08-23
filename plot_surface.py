@@ -260,9 +260,8 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     
     net = resnet20s()
-    net.cuda()
     print('loading tickets from {}'.format(args.ticket_dir))
-    ticket_checkpoint = torch.load(args.ticket_dir, map_location='cuda')
+    ticket_checkpoint = torch.load(args.ticket_dir, map_location='cpu')
     mask_checkpoint = extract_mask(ticket_checkpoint['state_dict'])
     if len(mask_checkpoint):
         prune_model_custom(net, mask_checkpoint)
