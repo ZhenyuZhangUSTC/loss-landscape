@@ -44,12 +44,21 @@ def check_sparsity(model):
     
     return 100*(1-zero_sum/sum_list)
 
+def cleanup_keys(model_dict):
+    new_dict = {}
+    for key in model_dict.keys():
+        if key[0] == '0': continue 
+        new_key = key[2:]
+        new_dict[new_key] = model_dict[key]
+
+
 model_file_path = sys.argv[1]
 model_file_list = ['{}-checkpoint.pth.tar'.format(i) for i in range(100)]
 for model_path in model_file_list:
     print(model_path)
     model = models.resnet50()
     model_checkpoint = torch.load(os.path.join(model_file_path, model_path), map_location='cpu')
+    model_checkpoint = cleanup_keys(model_checkpoint)
     mask_dict = extract_mask(model_checkpoint)
     prune_model_custom(model, mask_dict)
     model.load_state_dict(model_checkpoint)
