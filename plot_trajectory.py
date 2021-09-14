@@ -15,7 +15,7 @@ from projection_new import setup_PCA_directions, project_trajectory
 import plot_2D
 
 import torchvision.models as models
-
+import torch.nn as nn 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot optimization trajectory')
