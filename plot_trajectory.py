@@ -67,6 +67,6 @@ if __name__ == '__main__':
     # projection trajectory to given directions
     #--------------------------------------------------------------------------
     print('Plot trajectory')
-    proj_file = project_trajectory(dir_file, w, s, args.dataset, args.model,
+    proj_file = project_trajectory(dir_file, w, s,
                                 model_files, args.dir_type, 'cos')
     plot_2D.plot_trajectory(proj_file, dir_file)
