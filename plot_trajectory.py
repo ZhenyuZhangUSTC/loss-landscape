@@ -11,8 +11,10 @@ import os
 import argparse
 import model_loader
 import net_plotter
-from projection import setup_PCA_directions, project_trajectory
+from projection_new import setup_PCA_directions, project_trajectory
 import plot_2D
+
+import torchvision.models as models
 
 
 if __name__ == '__main__':
@@ -36,8 +38,10 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     # load the final model
     #--------------------------------------------------------------------------
-    last_model_file = args.model_folder + '/' + args.prefix + str(args.max_epoch) + args.suffix
-    net = model_loader.load(args.dataset, args.model, last_model_file)
+    last_model_file = args.model_folder + '/merge_{}-checkpoint.pth.tar'.format(args.max_epoch)
+    # net = model_loader.load(args.dataset, args.model, last_model_file)
+    net = models.resnet50()
+    net.load_state_dict(torch.load(last_model_file, map_location='cpu'))
     w = net_plotter.get_weights(net)
     s = net.state_dict()
 
@@ -45,8 +49,8 @@ if __name__ == '__main__':
     # collect models to be projected
     #--------------------------------------------------------------------------
     model_files = []
-    for epoch in range(args.start_epoch, args.max_epoch + args.save_epoch, args.save_epoch):
-        model_file = args.model_folder + '/' + args.prefix + str(epoch) + args.suffix
+    for epoch in [0,9,19,29,39,49,59,69,79,89,99]:
+        model_file = args.model_folder + '/merge_{}-checkpoint.pth.tar'.format(args.max_epoch)
         assert os.path.exists(model_file), 'model %s does not exist' % model_file
         model_files.append(model_file)
 
@@ -58,9 +62,11 @@ if __name__ == '__main__':
     else:
         dir_file = setup_PCA_directions(args, model_files, w, s)
 
+    print('Set PCA')
     #--------------------------------------------------------------------------
     # projection trajectory to given directions
     #--------------------------------------------------------------------------
+    print('Plot trajectory')
     proj_file = project_trajectory(dir_file, w, s, args.dataset, args.model,
                                 model_files, args.dir_type, 'cos')
     plot_2D.plot_trajectory(proj_file, dir_file)
