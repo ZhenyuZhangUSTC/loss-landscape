@@ -41,6 +41,9 @@ if __name__ == '__main__':
     last_model_file = args.model_folder + '/merge_{}-checkpoint.pth.tar'.format(args.max_epoch)
     # net = model_loader.load(args.dataset, args.model, last_model_file)
     net = models.resnet50()
+    features_number = net.fc.in_features
+    net.fc = nn.Linear(features_number, 10)
+
     net.load_state_dict(torch.load(last_model_file, map_location='cpu'))
     w = net_plotter.get_weights(net)
     s = net.state_dict()

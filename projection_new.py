@@ -13,7 +13,7 @@ import h5_util
 from sklearn.decomposition import PCA
 
 import torchvision.models as models
-
+import torch.nn as nn 
 
 def tensorlist_to_tensor(weights):
     """ Concatnate a list of tensors into one tensor.
@@ -158,6 +158,8 @@ def project_trajectory(dir_file, w, s, model_files,
     for model_file in model_files:
         print (model_file)
         net2 = models.resnet50()
+        features_number = net2.fc.in_features
+        net2.fc = nn.Linear(features_number, 10)
         net2.load_state_dict(torch.load(model_file, map_location='cpu'))
         if dir_type == 'weights':
             w2 = net_plotter.get_weights(net2)
@@ -210,6 +212,9 @@ def setup_PCA_directions(args, model_files, w, s):
     for model_file in model_files:
         print (model_file)
         net2 = models.resnet50()
+        features_number = net2.fc.in_features
+        net2.fc = nn.Linear(features_number, 10)
+
         net2.load_state_dict(torch.load(model_file, map_location='cpu'))
         if args.dir_type == 'weights':
             w2 = net_plotter.get_weights(net2)

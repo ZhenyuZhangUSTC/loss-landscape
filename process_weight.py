@@ -58,6 +58,9 @@ model_file_list = ['{}-checkpoint.pth.tar'.format(i) for i in range(100)]
 for model_path in model_file_list:
     print(model_path)
     model = models.resnet50()
+    features_number = model.fc.in_features
+    model.fc = nn.Linear(features_number, 10)
+
     model_checkpoint = torch.load(os.path.join(model_file_path, model_path), map_location='cpu')
     model_checkpoint = cleanup_keys(model_checkpoint)
     mask_dict = extract_mask(model_checkpoint)
