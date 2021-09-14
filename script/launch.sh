@@ -3,5 +3,3 @@ CUDA_VISIBLE_DEVICES=$1 nohup python plot_trajectory.py \
     --start_epoch 0 \
     --max_epoch 99 > log_trajectory_$2_0915.out 2>&1 &
 
-
-

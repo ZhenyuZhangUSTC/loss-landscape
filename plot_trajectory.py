@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # collect models to be projected
     #--------------------------------------------------------------------------
     model_files = []
-    for epoch in [0,9,19,29,39,49,59,69,79,89,99]:
+    for epoch in range(args.max_epoch):
         model_file = args.model_folder + '/merge_{}-checkpoint.pth.tar'.format(epoch)
         assert os.path.exists(model_file), 'model %s does not exist' % model_file
         model_files.append(model_file)
