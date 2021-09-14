@@ -45,8 +45,7 @@ def check_sparsity(model):
     return 100*(1-zero_sum/sum_list)
 
 model_file_path = sys.argv[1]
-model_file_list = os.listdir(model_file_path)
-model_file_list.sort()
+model_file_list = ['{}-checkpoint.pth.tar'.format(i) for i in range(100)]
 for model_path in model_file_list:
     print(model_path)
     model = models.resnet50()
