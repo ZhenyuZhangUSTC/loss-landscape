@@ -58,6 +58,7 @@ for model_path in model_file_list:
     print(model_path)
     model = models.resnet50()
     model_checkpoint = torch.load(os.path.join(model_file_path, model_path), map_location='cpu')
+    print(model_checkpoint.keys())
     model_checkpoint = cleanup_keys(model_checkpoint)
     mask_dict = extract_mask(model_checkpoint)
     prune_model_custom(model, mask_dict)
