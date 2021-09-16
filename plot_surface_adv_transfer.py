@@ -24,14 +24,11 @@ import model_loader
 import scheduler
 import mpi4pytorch as mpi
 from torch.utils.data import DataLoader
+import torchvision.transforms as transforms
 
-
-from pruner import *
-from models.model_zoo import *
-from dataset.poisoned_cifar10 import PoisonedCIFAR10
-from models.resnets import resnet20s
-
-
+import torchvision.models as models
+import torch.nn as nn 
+from adv_transfer_dataset import cifar10_dataloaders_generate_adv, Advdataset
 
 def name_surface_file(args, dir_file):
     # skip if surf_file is specified in args
@@ -172,6 +169,7 @@ if __name__ == '__main__':
     parser.add_argument('--threads', default=2, type=int, help='number of threads')
     parser.add_argument('--ngpu', type=int, default=1, help='number of GPUs to use for each rank, useful for data parallel evaluation')
     parser.add_argument('--batch_size', default=128, type=int, help='minibatch size')
+    parser.add_argument('--adv_data', action='store_true')
     
     parser.add_argument("--poison_ratio", type=float, default=0.01)
     parser.add_argument("--patch_size", type=int, default=5, help="Size of the patch")
@@ -259,17 +257,11 @@ if __name__ == '__main__':
     # Load models and extract parameters
     #--------------------------------------------------------------------------
     
-    # net = resnet20s()
-    # print('loading tickets from {}'.format(args.ticket_dir))
-    # ticket_checkpoint = torch.load(args.ticket_dir, map_location='cpu')
-    # mask_checkpoint = extract_mask(ticket_checkpoint['state_dict'])
-    # if len(mask_checkpoint):
-    #     prune_model_custom(net, mask_checkpoint)
-    # net.load_state_dict(ticket_checkpoint['state_dict'])
-    # check_sparsity(net)
+    net = models.resnet50()
+    features_number = net.fc.in_features
+    net.fc = nn.Linear(features_number, 10)
+    net.load_state_dict(torch.load(args.model_file, map_location='cpu'))
 
-
-    # net = model_loader.load(args.dataset, args.model, args.model_file)
     w = net_plotter.get_weights(net) # initial parameters
     s = copy.deepcopy(net.state_dict()) # deepcopy since state_dict are references
 
@@ -303,32 +295,31 @@ if __name__ == '__main__':
     # Setup dataloader
     #--------------------------------------------------------------------------
     # download CIFAR10 if it does not exit
-    if rank == 0 and args.dataset == 'cifar10':
-        torchvision.datasets.CIFAR10(root=args.dataset + '/data', train=True, download=True)
+    # if rank == 0 and args.dataset == 'cifar10':
+    #     torchvision.datasets.CIFAR10(root=args.dataset + '/data', train=True, download=True)
 
     mpi.barrier(comm)
 
-    trainloader, testloader = dataloader.load_dataset(args.dataset, args.datapath,
-                                args.batch_size, args.threads, args.raw_data,
-                                args.data_split, args.split_idx,
-                                args.trainloader, args.testloader)
+    # trainloader, testloader = dataloader.load_dataset(args.dataset, args.datapath,
+    #                             args.batch_size, args.threads, args.raw_data,
+    #                             args.data_split, args.split_idx,
+    #                             args.trainloader, args.testloader)
 
-
-    freq = True if args.freq else False
-    random_loc = True if args.random_loc else False
-    train_set = PoisonedCIFAR10(args.data, train=True, poison_ratio=args.poison_ratio, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
-    clean_testset = PoisonedCIFAR10(args.data, train=False, poison_ratio=0, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
-    poison_testset = PoisonedCIFAR10(args.data, train=False, poison_ratio=1.0, patch_size=args.patch_size, freq=freq, random_loc=random_loc, target=args.target)
-
-    train_dl = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True)
-    clean_test_dl = DataLoader(clean_testset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
-    poison_test_dl = DataLoader(poison_testset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+    # standard dataset
+    if args.adv_data:
+        print('Using Adversarial data')
+        normalize = transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
+        adv_dataset = Advdataset(root=os.path.join(args.datapath, 'adv_data.pt'), transform=normalize)
+        trainloader = DataLoader(adv_dataset, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+    else:
+        print('Using standard data')
+        trainloader = cifar10_dataloaders_generate_adv(batch_size=args.batch_size, data_dir=args.datapath, mark_normalize=True)
 
     #--------------------------------------------------------------------------
     # Start the computation
     #--------------------------------------------------------------------------
-    # crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
-    crunch(surf_file, net, w, s, d, poison_test_dl, 'test_loss', 'test_acc', comm, rank, args)
+    crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
+    # crunch(surf_file, net, w, s, d, poison_test_dl, 'test_loss', 'test_acc', comm, rank, args)
 
     #--------------------------------------------------------------------------
     # Plot figures
