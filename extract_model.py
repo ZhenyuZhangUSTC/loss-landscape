@@ -8,7 +8,9 @@ print(len(all_path_list))
 for file_path in all_path_list:
     print(file_path)
     source_path = os.path.join(file_path[len('mini_cps/'):], 'checkpoint.pth.tar')
-    target_path = os.path.join('target_model_0917', file_path[len('mini_cps/'):], 'checkpoint.pth.tar')
+    target_path_head = os.path.join('target_model_0917', file_path[len('mini_cps/'):])
+    os.makedirs(target_path_head, exist_ok=True)
+    target_path = os.path.join(target_path_head, 'checkpoint.pth.tar')
     shutil.copyfile(source_path, target_path)
 
 
