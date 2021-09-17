@@ -7,28 +7,28 @@ python plot_surface_adv_transfer.py --x=$1:$2:31 --y=$3:$4:31 --model resnet50 \
 
 
 # nips_data1 
-# x -10, 45  y -2, 10 
+# x -10, 10  y -10, 10 
 # nips_data10
-# x -10 50  y -6, 4
+# x -10 10  y -4, 2
 # nips_data100
-# x -20 90  y -20, 10
+# x -5 5  y -7, 3
 
 
 
 # torch_data1
-# x -10 50 y -5, 10
+# x -10 10 y -2, 2
 # torch_data10
-# x -20 70 y -10, 5
+# x -10 5 y -5, 5
 # torch_data100
-# x -20 90 y -20 10
+# x -5 3 y -8 3
 
 
 
 # zico_data1
-# x -5 25  y -8, 20
+# x -5 10  y -5, 5
 # zico_data10
-# x -20 130 y -10 8
+# x -5 5 y -6 2
 # zico_data100
-# x -30 160 y -10 25
+# x -10 5 y -2 15
 
 
