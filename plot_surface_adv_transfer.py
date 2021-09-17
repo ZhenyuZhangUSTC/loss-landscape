@@ -326,7 +326,7 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     if args.plot and rank == 0:
         if args.y and args.proj_file:
-            plot_2D.plot_contour_trajectory(surf_file, dir_file, args.proj_file, args.surf_file, args.show)
+            plot_2D.plot_contour_trajectory(surf_file, dir_file, args.proj_file, args.surf_file, 'train_loss', args.show)
         elif args.y:
             plot_2D.plot_2d_contour(surf_file, 'train_loss', args.vmin, args.vmax, args.vlevel, args.show)
         else:

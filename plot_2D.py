@@ -102,7 +102,7 @@ def plot_trajectory(proj_file, dir_file, show=False):
     if show: plt.show()
 
 
-def plot_contour_trajectory(surf_file, dir_file, proj_file, surf_name='loss_vals',
+def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_name='loss_vals',
                             vmin=0.1, vmax=10, vlevel=0.5, show=False):
     """2D contour + trajectory"""
 
@@ -140,7 +140,7 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, surf_name='loss_vals
     # fig.savefig(proj_file + '_' + surf_name + '_2dcontour_proj.pdf', dpi=300,
     #             bbox_inches='tight', format='pdf')
 
-    fig.savefig(surf_name + '_2dcontour_proj.svg', dpi=300,
+    fig.savefig(figure_name + '_2dcontour_proj.svg', dpi=300,
                 bbox_inches='tight')
     pf.close()
     if show: plt.show()
