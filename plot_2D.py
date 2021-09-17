@@ -137,8 +137,11 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, surf_name='loss_vals
     df.close()
     plt.clabel(CS1, inline=1, fontsize=6)
     plt.clabel(CS2, inline=1, fontsize=6)
-    fig.savefig(proj_file + '_' + surf_name + '_2dcontour_proj.pdf', dpi=300,
-                bbox_inches='tight', format='pdf')
+    # fig.savefig(proj_file + '_' + surf_name + '_2dcontour_proj.pdf', dpi=300,
+    #             bbox_inches='tight', format='pdf')
+
+    fig.savefig(surf_name + '_2dcontour_proj.svg', dpi=300,
+                bbox_inches='tight')
     pf.close()
     if show: plt.show()
 
