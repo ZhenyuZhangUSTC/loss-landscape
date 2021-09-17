@@ -13,6 +13,8 @@ for file_path in all_path_list:
         os.makedirs(target_path_head, exist_ok=True)
         target_path = os.path.join(target_path_head, 'checkpoint.pth.tar')
         shutil.copyfile(source_path, target_path)
+    else:
+        print('Missing ', file_path)
 
 
 
