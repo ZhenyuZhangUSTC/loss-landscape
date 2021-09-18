@@ -3,7 +3,7 @@ import shutil
 import numpy as np 
 
 
-all_path_list = np.loadtxt('file_path.txt', dtype=np.str)
+all_path_list = np.loadtxt('file_path2.txt', dtype=np.str)
 print(len(all_path_list))
 for file_path in all_path_list:
     source_path = os.path.join(file_path[len('mini_cps/'):], 'checkpoint.pth.tar')
