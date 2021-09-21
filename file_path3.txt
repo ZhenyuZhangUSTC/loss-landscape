@@ -1,0 +1,5 @@
+mini_cps/res_0815/resnet18_cifar10_d0.1_gradient_T900_b128_r0.5_76e5
+mini_cps/res_0815/resnet18_cifar10_d0.2_gradient_T900_b128_r0.5_7056
+mini_cps/res_0815/resnet18_cifar10_d0.05_gradient_T900_b128_r0.5_2453
+mini_cps/res_0815/resnet18_cifar10_d0.6_gradient_T900_b128_r0.5_f47c
+mini_cps/res_0815/resnet18_cifar10_d0.8_gradient_T900_b128_r0.5_108c
