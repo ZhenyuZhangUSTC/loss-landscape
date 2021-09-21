@@ -7,7 +7,7 @@ python plot_surface_adv_transfer.py --x=$1:$2:31 --y=$3:$4:31 --model resnet50 \
 
 
 # nips_data1 
-# x -10, 20  y -15, 10 
+# x -10, 50  y -15, 10 
 # nips_data10
 # x -10 10  y -10, 10
 # nips_data100
@@ -25,7 +25,7 @@ python plot_surface_adv_transfer.py --x=$1:$2:31 --y=$3:$4:31 --model resnet50 \
 
 
 # zico_data1
-# x -5 15  y -5, 20
+# x -5 25  y -5, 20
 # zico_data10
 # x -20 10 y -10 6
 # zico_data100
