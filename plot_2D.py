@@ -134,6 +134,10 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_na
     ratio_y = df['explained_variance_ratio_'][1]
     plt.xlabel('1st PC: %.2f %%' % (ratio_x*100), fontsize='xx-large')
     plt.ylabel('2nd PC: %.2f %%' % (ratio_y*100), fontsize='xx-large')
+
+    plt.ylim(-20,20)
+    plt.xlim(-20,150)
+
     df.close()
     plt.clabel(CS1, inline=1, fontsize=6)
     plt.clabel(CS2, inline=1, fontsize=6)
