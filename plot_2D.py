@@ -136,7 +136,7 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_na
     plt.ylabel('2nd PC: %.2f %%' % (ratio_y*100), fontsize='xx-large')
 
     plt.ylim(-20,20)
-    plt.xlim(-20,150)
+    plt.xlim(-20,25)
 
     df.close()
     plt.clabel(CS1, inline=1, fontsize=6)
