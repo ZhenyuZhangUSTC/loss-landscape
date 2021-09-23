@@ -116,7 +116,7 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_na
     if surf_name in f.keys():
         Z = np.array(f[surf_name][:])
 
-    fig = plt.figure(figsize=(20,10))
+    fig = plt.figure(figsize=(15,5))
     CS1 = plt.contour(X, Y, Z, levels=np.arange(vmin, vmax, vlevel))
     CS2 = plt.contour(X, Y, Z, levels=np.logspace(1, 8, num=8))
 
@@ -132,8 +132,8 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_na
     df = h5py.File(dir_file,'r')
     ratio_x = df['explained_variance_ratio_'][0]
     ratio_y = df['explained_variance_ratio_'][1]
-    plt.xlabel('1st PC: %.2f %%' % (ratio_x*100), fontsize='xx-large')
-    plt.ylabel('2nd PC: %.2f %%' % (ratio_y*100), fontsize='xx-large')
+    # plt.xlabel('1st PC: %.2f %%' % (ratio_x*100), fontsize='xx-large')
+    # plt.ylabel('2nd PC: %.2f %%' % (ratio_y*100), fontsize='xx-large')
 
     plt.ylim(-20,20)
     plt.xlim(-20,25)
