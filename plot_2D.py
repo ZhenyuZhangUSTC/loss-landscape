@@ -116,7 +116,7 @@ def plot_contour_trajectory(surf_file, dir_file, proj_file, figure_name, surf_na
     if surf_name in f.keys():
         Z = np.array(f[surf_name][:])
 
-    fig = plt.figure(figsize=(15,5))
+    fig = plt.figure()
     CS1 = plt.contour(X, Y, Z, levels=np.arange(vmin, vmax, vlevel))
     CS2 = plt.contour(X, Y, Z, levels=np.logspace(1, 8, num=8))
 
