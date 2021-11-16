@@ -199,6 +199,7 @@ if __name__ == '__main__':
     parser.add_argument('--split_idx', default=0, type=int, help='the index of data splits for the dataloader')
     parser.add_argument('--trainloader', default='', help='path to the dataloader with random labels')
     parser.add_argument('--testloader', default='', help='path to the testloader with random labels')
+    parser.add_argument('--workers', type=int, default=2, help='number of workers in dataloader')
 
     # model parameters
     parser.add_argument('--model', default='resnet56', help='model name')
