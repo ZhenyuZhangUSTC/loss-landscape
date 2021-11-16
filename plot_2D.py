@@ -39,30 +39,30 @@ def plot_2d_contour(surf_file, surf_name='train_loss', vmin=0.1, vmax=10, vlevel
         print('The length of coordinates is not enough for plotting contours')
         return
 
-    # # --------------------------------------------------------------------
-    # # Plot 2D contours
-    # # --------------------------------------------------------------------
-    # fig = plt.figure()
-    # CS = plt.contour(X, Y, Z, cmap='summer', levels=np.arange(vmin, vmax, vlevel))
-    # plt.clabel(CS, inline=1, fontsize=8)
-    # fig.savefig(surf_file + '_' + surf_name + '_2dcontour' + '.pdf', dpi=300,
-    #             bbox_inches='tight', format='pdf')
+    # --------------------------------------------------------------------
+    # Plot 2D contours
+    # --------------------------------------------------------------------
+    fig = plt.figure()
+    CS = plt.contour(X, Y, Z, cmap='summer', levels=np.arange(vmin, vmax, vlevel))
+    plt.clabel(CS, inline=1, fontsize=8)
+    fig.savefig(surf_file + '_' + surf_name + '_2dcontour' + '.pdf', dpi=300,
+                bbox_inches='tight', format='pdf')
 
-    # fig = plt.figure()
-    # print(surf_file + '_' + surf_name + '_2dcontourf' + '.pdf')
-    # CS = plt.contourf(X, Y, Z, cmap='summer', levels=np.arange(vmin, vmax, vlevel))
-    # fig.savefig(surf_file + '_' + surf_name + '_2dcontourf' + '.pdf', dpi=300,
-    #             bbox_inches='tight', format='pdf')
+    fig = plt.figure()
+    print(surf_file + '_' + surf_name + '_2dcontourf' + '.pdf')
+    CS = plt.contourf(X, Y, Z, cmap='summer', levels=np.arange(vmin, vmax, vlevel))
+    fig.savefig(surf_file + '_' + surf_name + '_2dcontourf' + '.pdf', dpi=300,
+                bbox_inches='tight', format='pdf')
 
-    # # --------------------------------------------------------------------
-    # # Plot 2D heatmaps
-    # # --------------------------------------------------------------------
-    # fig = plt.figure()
-    # sns_plot = sns.heatmap(Z, cmap='viridis', cbar=True, vmin=vmin, vmax=vmax,
-    #                        xticklabels=False, yticklabels=False)
-    # sns_plot.invert_yaxis()
-    # sns_plot.get_figure().savefig(surf_file + '_' + surf_name + '_2dheat.pdf',
-    #                               dpi=300, bbox_inches='tight', format='pdf')
+    # --------------------------------------------------------------------
+    # Plot 2D heatmaps
+    # --------------------------------------------------------------------
+    fig = plt.figure()
+    sns_plot = sns.heatmap(Z, cmap='viridis', cbar=True, vmin=vmin, vmax=vmax,
+                        xticklabels=False, yticklabels=False)
+    sns_plot.invert_yaxis()
+    sns_plot.get_figure().savefig(surf_file + '_' + surf_name + '_2dheat.pdf',
+                                dpi=300, bbox_inches='tight', format='pdf')
 
     # --------------------------------------------------------------------
     # Plot 3D surface

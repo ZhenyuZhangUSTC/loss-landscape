@@ -4,10 +4,10 @@ import numpy as np
 from PIL import Image
 from torch.utils import data
 from torchvision import transforms
-from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR100
 
 
-class PoisonedCIFAR10(data.Dataset):
+class PoisonedCIFAR100(data.Dataset):
     def __init__(self, root,
                 train=True, 
                 poison_ratio=0.1, 
@@ -41,7 +41,7 @@ class PoisonedCIFAR10(data.Dataset):
         trigger = trans_trigger(trigger)
         trigger = torch.tensor(np.transpose(trigger.numpy(), (1, 2, 0))) # 5,5,3 [0,255]
 
-        normalize = transforms.Normalize(mean = (0.4914, 0.4822, 0.4465), std = (0.2470, 0.2435, 0.2616))
+        normalize = transforms.Normalize(mean = (0.5071, 0.4866, 0.4409), std = (0.2673, 0.2564, 0.2762))
 
         if augmentation and self.train:
             self.transform = transforms.Compose([
@@ -59,9 +59,9 @@ class PoisonedCIFAR10(data.Dataset):
                 ])
 
         if self.train:
-            dataset = CIFAR10(root, train=True, transform=self.transform, download=True)
+            dataset = CIFAR100(root, train=True, transform=self.transform, download=True)
         else:
-            dataset = CIFAR10(root, train=False, transform=self.transform, download=True)
+            dataset = CIFAR100(root, train=False, transform=self.transform, download=True)
 
         self.imgs = dataset.data
         self.labels = dataset.targets
@@ -91,4 +91,5 @@ class PoisonedCIFAR10(data.Dataset):
 
     def __len__(self):
         return len(self.imgs)
+
 
