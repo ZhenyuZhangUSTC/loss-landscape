@@ -13,6 +13,7 @@ from models.densenet import *
 from models.vgg import *
 from models.adv_resnet import resnet20s as robust_res20s
 from torch.utils.data import DataLoader, Subset
+import torchvision.models as models 
 
 import argparse
 import copy
