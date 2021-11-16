@@ -298,7 +298,7 @@ if __name__ == '__main__':
                                         random_loc=args.random_loc, upper_right=args.upper_right, bottom_left=args.bottom_left, 
                                         target=args.target, black_trigger=args.black_trigger)
 
-        sub_train_set = Subset(train_set, list(range(50000))[:10000])
+        sub_train_set = Subset(train_set, list(range(50000))[:1000])
 
         clean_testset = PoisonedCIFAR10(args.data, train=False, poison_ratio=0, patch_size=args.patch_size,
                                     random_loc=args.random_loc, upper_right=args.upper_right, bottom_left=args.bottom_left, 
@@ -323,7 +323,7 @@ if __name__ == '__main__':
                                     random_loc=args.random_loc, upper_right=args.upper_right, bottom_left=args.bottom_left, 
                                     target=args.target, black_trigger=args.black_trigger)
         
-        sub_train_set = Subset(train_set, list(range(50000))[:10000])
+        sub_train_set = Subset(train_set, list(range(50000))[:1000])
 
         train_dl = DataLoader(sub_train_set, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
         clean_test_dl = DataLoader(clean_testset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
@@ -333,7 +333,7 @@ if __name__ == '__main__':
         print('Dataset = Restricted ImageNet')
         classes = 9 
         dataset = RestrictedImageNet(args.data)
-        train_dl, _, _ = dataset.make_loaders(workers=args.workers, batch_size=args.batch_size, poison_ratio=args.poison_ratio, target=args.target, patch_size=args.patch_size, black_trigger=args.black_trigger, subset=10000)
+        train_dl, _, _ = dataset.make_loaders(workers=args.workers, batch_size=args.batch_size, poison_ratio=args.poison_ratio, target=args.target, patch_size=args.patch_size, black_trigger=args.black_trigger, subset=1000)
         _, clean_test_dl = dataset.make_loaders(only_val=True, workers=args.workers, batch_size=args.batch_size, poison_ratio=0, target=args.target, patch_size=args.patch_size, black_trigger=args.black_trigger)
         _, poison_test_dl = dataset.make_loaders(only_val=True, workers=args.workers, batch_size=args.batch_size, poison_ratio=1, target=args.target, patch_size=args.patch_size, black_trigger=args.black_trigger)
     else:
